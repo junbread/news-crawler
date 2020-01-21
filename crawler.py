@@ -42,7 +42,7 @@ for link in links:
         link, raw_article.get('detail').get('TITLE')))
 
     with open(link + ".story", "w", encoding="utf-8") as f:
-        f.write("<<<TITLE>>>\n")
+        f.write("@title\n")
         f.write(raw_article.get('detail').get('TITLE') + '\n')
-        f.write("<<<CONTENT>>>\n")
+        f.write("@content\n")
         f.write(raw_article.get('detail').get('CONTENT'))

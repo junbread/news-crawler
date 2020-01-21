@@ -3,6 +3,7 @@ from bs4.element import NavigableString, Tag
 from koalanlp.Util import initialize, finalize
 from koalanlp import API
 from koalanlp.proc import SentenceSplitter, Tagger
+from textrankr import TextRank
 
 import hanja
 import sys
@@ -29,7 +30,7 @@ def process(target):
 
     # initialize korean language analyzers
     splitter = SentenceSplitter(API.HNN)
-    tagger = Tagger(API.KHAIII, kha_resource='/usr/local/share/khaiii')
+    tagger = Tagger(API.KHAIII, kha_resource="/usr/local/share/khaiii")
 
     # split text into sentences
     sentences = splitter(target)    
@@ -58,23 +59,23 @@ initialize(KHAIII='LATEST', HNN='LATEST')
 load_path = sys.argv[1]
 save_path = sys.argv[2]
 
-files = [f for f in os.listdir(load_path) if os.path.isfile(
-    load_path + '/' + f) and f.endswith("story")]
+files = [f for f in os.listdir(load_path) if os.path.isfile(os.path.join(load_path, f)) and f.endswith("story")]
 for fi in files:
-    print('id: {}\n'.format(fi))
-    with open(load_path + '/' + fi, 'r', encoding='utf-8') as f:
+    print('id: {}'.format(fi))
+    with open(os.path.join(load_path, fi), 'r', encoding='utf-8') as f:
         # get title
-        assert "<<<TITLE>>>\n" == f.readline()
+        assert "@title\n" == f.readline()
 
         title = ""
         content = ""
 
         line = f.readline()
-        while line != '<<<CONTENT>>>\n':
+        while line != '@content\n':
             title += line
             line = f.readline()
         content = f.read()
 
+    # specify skip target article titles (e.g. photo only articles)
     if any(x in title for x in ['포토','사진', '경향이 찍은 오늘']):
         print("skipped")
         continue
@@ -112,19 +113,21 @@ for fi in files:
 
     # process text
     content = process(content)
-    summary = process(summary)
+    
+    textrank = TextRank(content)
+    summary = textrank.summarize()
 
     print(summary)
 
     # save processed files
     if not os.path.exists(save_path):
         os.mkdir(save_path)
-    with open(save_path + '/' + fi, 'w', encoding='utf-8') as f:
-        f.write("<<<TITLE>>>\n")
+    with open(os.path.join(save_path, fi), 'w', encoding='utf-8') as f:
+        f.write("@title\n")
         f.write(title.strip() + "\n")
-        f.write("<<<SUMMARY>>>\n")
+        f.write("@summary\n")
         f.write(summary.strip() + "\n")
-        f.write("<<<CONTENT>>>\n")
+        f.write("@content\n")
         f.write(content.strip() + "\n")
 
 finalize()
