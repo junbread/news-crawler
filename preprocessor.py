@@ -54,6 +54,10 @@ def process(target):
 
     return target_regularized
 
+if len(sys.argv) != 3:
+    print("Usage: python preprocessor.py <load_path> <save_path>")
+    sys.exit()
+
 initialize(KHAIII='LATEST', HNN='LATEST')
 
 load_path = sys.argv[1]

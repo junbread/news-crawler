@@ -221,7 +221,7 @@ def check_num_stories(stories_dir, num_expected):
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
-        print("USAGE: python make_datafiles.py <stories_dir>")
+        print("USAGE: python dataset-processor.py <stories_dir>")
         sys.exit()
     stories_dir = sys.argv[1]
 

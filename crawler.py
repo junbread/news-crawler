@@ -5,9 +5,9 @@ import sys
 import os
 
 # argument check
-if (len(sys.argv) != 3):
+if len(sys.argv) != 3:
     print("Usage: python crawler.py <article_size> <save_path>")
-    exit(1)
+    sys.exit()
 
 article_size = sys.argv[1]
 save_path = sys.argv[2]
