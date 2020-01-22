@@ -211,22 +211,11 @@ def write_to_bin(story_fnames, out_file, makevocab=False):
                 writer.write(word + ' ' + str(count) + '\n')
         print("Finished writing vocab file")
 
-
-def check_num_stories(stories_dir, num_expected):
-    num_stories = len(os.listdir(stories_dir))
-    if num_stories != num_expected:
-        raise Exception("stories directory %s contains %i files but should contain %i" % (
-            stories_dir, num_stories, num_expected))
-
-
 if __name__ == '__main__':
     if len(sys.argv) != 2:
         print("USAGE: python dataset-processor.py <stories_dir>")
         sys.exit()
     stories_dir = sys.argv[1]
-
-    # Check the stories directories contain the correct number of .story files
-    check_num_stories(stories_dir, num_expected_stories)
 
     # Create some new directories
     if not os.path.exists(tokenized_stories_dir):
