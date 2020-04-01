@@ -35,18 +35,13 @@ def process(target):
     # split text into sentences
     sentences = splitter(target)    
 
-    # regularize sentences (ex: 해서->하여서)
+    # regularize sentences and split into POS
     target_regularized = ''
     for sent in sentences:
         sent = tagger.tagSentence(sent)
         sent_regularized = []
         for word in sent[0].words:
-            word_regularized = ''
-            for m in word.morphemes:
-                if m.tag.startswith('J'): # if 조사
-                    word_regularized += ' ' # add space
-                word_regularized += m.surface
-            sent_regularized.append(word_regularized)
+            sent_regularized.append(' '.join([m.surface for m in word.morphemes]))
         target_regularized += '\n' + ' '.join(sent_regularized)
     
     # regularize whitespaces
